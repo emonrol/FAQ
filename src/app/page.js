@@ -42,7 +42,7 @@ export default function Home() {
   const loadFAQ = async () => {
     try {
       setLoading(true);
-      const res = await fetch("https://api.github.com/repos/chagai95/stayinginbern/issues?labels=faq");
+      const res = await fetch("https://api.github.com/repos/chagai95/stayinginbern/issues?labels=faq&state=closed");
       
       if (!res.ok) {
         throw new Error(`Failed to fetch FAQ data: ${res.status}`);
