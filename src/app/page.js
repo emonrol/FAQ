@@ -217,7 +217,7 @@ export default function Home() {
             Still have questions?
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Can't find what you're looking for? Join our community chat!
+            Can not find what you are looking for? Join our community chat!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
