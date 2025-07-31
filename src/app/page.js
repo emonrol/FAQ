@@ -238,7 +238,7 @@ export default function Home() {
               WhatsApp: +41 78 316 67 27
             </a>
             <a
-              href="https://stayinginbern.ch/chat-link"
+              href="http://tiny.cc/jtjq001"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white hover:bg-gray-50 text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-lg font-medium transition-colors dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-blue-400 dark:border-blue-400"
