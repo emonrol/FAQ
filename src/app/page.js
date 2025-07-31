@@ -7,7 +7,7 @@ const FAQItem = ({ question, answer, comments, html_url, isOpen, onToggle }) => 
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">
       <button
-        className="w-full py-6 px-4 text-left flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+        className="w-full py-6 px-4 text-left flex justify-between items-center hover:bg-blue-50 dark:hover:bg-blue-900 transition-colors cursor-pointer"
         onClick={onToggle}
       >
         <span className="font-medium text-gray-900 dark:text-gray-100 pr-4">
