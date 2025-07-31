@@ -128,7 +128,7 @@ export default function Home() {
           </div>
           {searchTerm && (
             <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              {filteredFaqData.reduce((total, section) => total + section.questions.length, 0)} result(s) found for "{searchTerm}"
+              {filteredFaqData.reduce((total, section) => total + section.questions.length, 0)} result(s) found for &quot;{searchTerm}&quot;
             </p>
           )}
         </div>
@@ -154,7 +154,7 @@ export default function Home() {
         
         {!loading && !error && filteredFaqData.length === 0 && searchTerm && (
           <div className="text-center py-12">
-            <p className="text-gray-600 dark:text-gray-300">No FAQ items match your search for "{searchTerm}".</p>
+            <p className="text-gray-600 dark:text-gray-300">No FAQ items match your search for &quot{searchTerm}&quot.</p>
             <button
               onClick={() => setSearchTerm('')}
               className="mt-4 text-blue-600 dark:text-blue-400 hover:underline"
