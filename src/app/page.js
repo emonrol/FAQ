@@ -230,12 +230,12 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="https://wa.me/41766524456"
+              href="https://wa.me/41783166727"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
             >
-              WhatsApp: +41 76 652 44 56
+              WhatsApp: +41 78 316 67 27
             </a>
             <a
               href="https://stayinginbern.ch/chat-link"
