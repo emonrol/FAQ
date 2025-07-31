@@ -31,6 +31,7 @@ export default function Home() {
   const [faqData, setFaqData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const toggleItem = (index) => {
     setOpenItems(prev => ({
@@ -80,6 +81,15 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
+  // Filter FAQ data based on search term
+  const filteredFaqData = faqData.map(section => ({
+    ...section,
+    questions: section.questions.filter(item => 
+      item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.answer.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  })).filter(section => section.questions.length > 0);
+
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Header */}
@@ -92,6 +102,38 @@ export default function Home() {
 
       {/* FAQ Content */}
       <main className="max-w-4xl mx-auto px-4 py-12">
+        {/* Search Bar */}
+        <div className="mb-8">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Search FAQ"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+          </div>
+          {searchTerm && (
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+              {filteredFaqData.reduce((total, section) => total + section.questions.length, 0)} result(s) found for "{searchTerm}"
+            </p>
+          )}
+        </div>
         {loading && (
           <div className="text-center py-12">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -112,15 +154,27 @@ export default function Home() {
           </div>
         )}
         
-        {!loading && !error && faqData.length === 0 && (
+        {!loading && !error && filteredFaqData.length === 0 && searchTerm && (
+          <div className="text-center py-12">
+            <p className="text-gray-600 dark:text-gray-300">No FAQ items match your search for "{searchTerm}".</p>
+            <button
+              onClick={() => setSearchTerm('')}
+              className="mt-4 text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Clear search
+            </button>
+          </div>
+        )}
+        
+        {!loading && !error && faqData.length === 0 && !searchTerm && (
           <div className="text-center py-12">
             <p className="text-gray-600 dark:text-gray-300">No FAQ items found.</p>
           </div>
         )}
         
-        {!loading && faqData.length > 0 && (
+        {!loading && filteredFaqData.length > 0 && (
           <div className="space-y-8">
-            {faqData.map((section, sectionIndex) => (
+            {filteredFaqData.map((section, sectionIndex) => (
               <div key={sectionIndex} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
                 <div className="bg-gray-50 dark:bg-gray-700 px-6 py-4 border-b border-gray-200 dark:border-gray-600">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
