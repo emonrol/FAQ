@@ -57,9 +57,7 @@ export default function Home() {
         questions: data.map(issue => ({
           question: issue.title,
           answer: issue.body || "No description provided."
-        }))
-      }];
-      
+        }))      }];
       setFaqData(transformedData);
       setError(null);
     } catch (err) {
