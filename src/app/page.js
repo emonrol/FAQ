@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import React from 'react';
 
-const FAQItem = ({ question, answer, isOpen, onToggle }) => {
+const FAQItem = ({ question, answer, comments, html_url, isOpen, onToggle }) => {
   return (
     <div className="border-b border-gray-200 dark:border-gray-700">
       <button
@@ -18,8 +18,25 @@ const FAQItem = ({ question, answer, isOpen, onToggle }) => {
         </span>
       </button>
       {isOpen && (
-        <div className="px-4 pb-6 text-gray-600 dark:text-gray-300 leading-relaxed">
-          {answer}
+        <div className="px-4 pb-6">
+          <div className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">
+            {answer}
+          </div>
+          {comments > 0 && (
+            <div className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-lg p-3">
+              <p className="text-blue-800 dark:text-blue-200 text-sm mb-2">
+                💬 This FAQ has {comments} comment{comments !== 1 ? 's' : ''} on GitHub
+              </p>
+              <a
+                href={html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium"
+              >
+                Click here to view the discussion on GitHub →
+              </a>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -51,18 +68,21 @@ export default function Home() {
       
       const data = await res.json();
       
-      // Transform GitHub issues into FAQ forma
+      // Transform GitHub issues into FAQ format
       const transformedData = [{
         category: "FAQ from GitHub Issues",
         questions: data.map(issue => ({
           question: issue.title,
-          answer: issue.body || "No description provided."
-        }))      }];
+          answer: issue.body || "No description provided.",
+          comments: issue.comments,
+          html_url: issue.html_url
+        }))
+      }];
       setFaqData(transformedData);
       setError(null);
     } catch (err) {
       setError(err.message);
-      console.error('Error loading FAQ:', err);
+     console.error('Error loading FAQ:', err);
     } finally {
       setLoading(false);
     }
@@ -187,6 +207,8 @@ export default function Home() {
                         key={currentIndex}
                         question={item.question}
                         answer={item.answer}
+                        comments={item.comments}
+                        html_url={item.html_url}
                         isOpen={openItems[currentIndex]}
                         onToggle={() => toggleItem(currentIndex)}
                       />
