@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import React from 'react';
+import Fuse from 'fuse.js';
 
 const FAQItem = ({ question, answer, comments, html_url, isOpen, onToggle }) => {
   return (
@@ -99,14 +100,51 @@ export default function Home() {
     return () => clearInterval(interval);
   }, []);
 
-  // Filter FAQ data based on search term
-  const filteredFaqData = faqData.map(section => ({
-    ...section,
-    questions: section.questions.filter(item => 
-      item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.answer.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  })).filter(section => section.questions.length > 0);
+  // Filter FAQ data based on search term using fuzzy search
+  const filteredFaqData = useMemo(() => {
+    if (!searchTerm.trim()) {
+      return faqData;
+    }
+
+    // Flatten all questions from all sections for fuzzy search
+    const allQuestions = faqData.flatMap(section => 
+      section.questions.map(question => ({
+        ...question,
+        category: section.category
+      }))
+    );
+
+    // Configure Fuse.js for fuzzy search
+    const fuseOptions = {
+      keys: [
+        { name: 'question', weight: 0.7 },
+        { name: 'answer', weight: 0.3 }
+      ],
+      threshold: 0.4, // Lower threshold = more strict matching
+      includeScore: true,
+      minMatchCharLength: 2,
+      ignoreLocation: true,
+      findAllMatches: true
+    };
+
+    const fuse = new Fuse(allQuestions, fuseOptions);
+    const searchResults = fuse.search(searchTerm);
+
+    // Group results back by category
+    const groupedResults = {};
+    searchResults.forEach(result => {
+      const item = result.item;
+      if (!groupedResults[item.category]) {
+        groupedResults[item.category] = {
+          category: item.category,
+          questions: []
+        };
+      }
+      groupedResults[item.category].questions.push(item);
+    });
+
+    return Object.values(groupedResults);
+  }, [faqData, searchTerm]);
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -226,34 +264,16 @@ export default function Home() {
             Still have questions?
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">
-            Can not find what you are looking for? Join our community chat!
+            Can not find what you are looking for? Join our group!
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="https://wa.me/41783166727"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
-            >
-              WhatsApp: +41 78 316 67 27
-            </a>
             <a
               href="http://tiny.cc/jtjq001"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white hover:bg-gray-50 text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-lg font-medium transition-colors dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-blue-400 dark:border-blue-400"
             >
-              Join Community Chat
-            </a>
-          </div>
-          <div className="mt-4">
-            <a
-              href="https://stayinginbern.ch/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 dark:text-blue-400 hover:underline"
-            >
-              Visit our website: stayinginbern.ch
+              Ask for help group
             </a>
           </div>
         </div>
